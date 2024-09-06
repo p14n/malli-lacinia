@@ -8,22 +8,29 @@
 (ns-unmap *ns* 'Character)
 
 (def Episode [:enum {:description "The episodes of the original Star Wars trilogy."} :NEWHOPE :EMPIRE :JEDI])
-(def Character [:map [:id :string] [:name :string] [:appearsIn [:vector #'Episode]] [:friends [:vector [:ref #'Character]]]])
+(def Character [:map
+                [:id :string]
+                [:name {:optional true} :string]
+                [:appearsIn [:vector #'Episode]]
+                [:friends [:vector [:ref #'Character]]]])
 (def Droid [:map
             {:implements [#'Character]}
             [:id :string]
-            [:name :string]
+            [:name {:optional true} :string]
             [:appearsIn [:vector #'Episode]]
             [:friends
              [:vector #'Character]]
-            [:primaryFunction [:vector :string]]])
+            [:primaryFunction {:optional true} [:vector :string]]])
 (def Human [:map
             {:implements [#'Character]}
             [:id :string]
-            [:name :string]
+            [:name {:optional true} :string]
+            [:isAlive :boolean]
+            [:age :int]
+            [:height :double]
             [:appearsIn [:vector #'Episode]]
             [:friends [:vector #'Character]]
-            [:home_planet :string]])
+            [:home_planet {:optional true} :string]])
 
 (def all-malli
   [:map
@@ -61,7 +68,7 @@
 
    :interfaces
    {:Character
-    {:fields {:id {:type 'String}
+    {:fields {:id {:type 'ID}
               :name {:type 'String}
               :appearsIn {:type '(list :Episode)}
               :friends {:type '(list :Character)}}}}
@@ -69,7 +76,7 @@
    :objects
    {:Droid
     {:implements [:Character]
-     :fields {:id {:type 'String}
+     :fields {:id {:type 'ID}
               :name {:type 'String}
               :appearsIn {:type '(list :Episode)}
               :friends {:type '(list :Character)}
@@ -77,8 +84,11 @@
 
     :Human
     {:implements [:Character]
-     :fields {:id {:type 'String}
+     :fields {:id {:type 'ID}
               :name {:type 'String}
+              :age {:type '(non-null Int)}
+              :height {:type '(non-null Float)}
+              :isAlive {:type '(non-null Boolean)}
               :appearsIn {:type '(list :Episode)}
               :friends {:type '(list :Character)}
               :home_planet {:type 'String}}}
@@ -95,8 +105,6 @@
       :droid {:type :Droid
               :args {:id {:type 'String
                           :default-value "2001"}}}}}}})
-
-
 
 
 (deftest create-schema
