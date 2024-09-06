@@ -1,0 +1,5 @@
+.aider*
+.lsp
+.rebel_readline_history
+.cpcache
+.clj-kondo/.cache
