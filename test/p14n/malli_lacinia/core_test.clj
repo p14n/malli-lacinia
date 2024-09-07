@@ -13,6 +13,7 @@
                 [:name {:optional true} :string]
                 [:appearsIn [:vector #'Episode]]
                 [:friends [:vector [:ref #'Character]]]])
+
 (def Droid [:map
             {:implements [#'Character]}
             [:id :string]
