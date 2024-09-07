@@ -17,7 +17,7 @@
   (testing "Character generator produces valid data"
     (let [generated-character (characters-generator)]
       (is (m/validate [:vector t/Character] generated-character)))))
-(defn pr> [x] (println x) x)
+
 (def schema-with-generators
   (->  t/star-wars-schema-lacinia-with-malli
        (util/inject-resolvers {:Droid/friends (fn [_ _ _] (characters-generator))
