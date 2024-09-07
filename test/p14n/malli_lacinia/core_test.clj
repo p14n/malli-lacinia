@@ -12,14 +12,14 @@
                 [:id :string]
                 [:name {:optional true} :string]
                 [:appearsIn [:vector #'Episode]]
-                [:friends [:vector [:ref #'Character]]]])
+                [:friends {:optional true} [:vector [:ref #'Character]]]])
 
 (def Droid [:map
             {:implements [#'Character]}
             [:id :string]
             [:name {:optional true} :string]
             [:appearsIn [:vector #'Episode]]
-            [:friends
+            [:friends {:optional true}
              [:vector #'Character]]
             [:primaryFunction {:optional true} [:vector :string]]])
 (def Human [:map
@@ -30,7 +30,7 @@
             [:age :int]
             [:height :double]
             [:appearsIn [:vector #'Episode]]
-            [:friends [:vector #'Character]]
+            [:friends {:optional true} [:vector #'Character]]
             [:home_planet {:optional true} :string]])
 
 (def all-malli
