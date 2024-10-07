@@ -5,5 +5,7 @@
          :extra-deps {metosin/malli {:mvn/version "0.16.4"}
                       com.walmartlabs/lacinia {:mvn/version "1.2.1"}
                       org.clojure/test.check {:mvn/version "1.1.1"}
-                      lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+                      lambdaisland/kaocha {:mvn/version "1.91.1392"}
+                      clj-commons/clj-yaml {:mvn/version "1.0.28"}
+                      cheshire/cheshire {:mvn/version "5.13.0"}}
          :main-opts ["-m" "kaocha.runner"]}}}
