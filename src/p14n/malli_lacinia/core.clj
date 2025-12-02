@@ -36,16 +36,18 @@
                                (select-keys o [:fields])))) obs))
 
 (defn malli-field->lacinia-field-single [optional? f]
-  (let [tp (if (var? f)
-             (var-to-kw f)
-             (case f
-               :string 'String
-               :keyword 'String
-               :boolean 'Boolean
-               :int 'Int
-               :double 'Float
-               :number 'Float
-               (throw (ex-info (str "Unknown type: " f) {:type f}))))]
+  (let [tp (cond (var? f) (var-to-kw f)
+                 (and (keyword? f)
+                      (not (nil? (namespace f))))
+                 (-> f name keyword)
+                 :else (case f
+                         :string 'String
+                         :keyword 'String
+                         :boolean 'Boolean
+                         :int 'Int
+                         :double 'Float
+                         :number 'Float
+                         (throw (ex-info (str "Unknown type: " f) {:type f}))))]
     (if optional?
       {:type tp}
       {:type (list 'non-null tp)})))

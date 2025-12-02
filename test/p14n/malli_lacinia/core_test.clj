@@ -40,6 +40,44 @@
    [:Droid Droid]
    [:Human Human]])
 
+
+(def Inner
+  [:map
+   [:id :string]
+   [:name {:optional true} :string]
+   [:outer {:optional true} [:ref ::Outer]]])
+
+(def Outer
+  [:map
+   [:id :string]
+   [:name {:optional true} :string]
+   [:inner {:optional true} [:ref ::Inner]]])
+
+(def recursive-registry {::Inner Inner
+                         ::Outer Outer})
+
+(def recursive-malli
+  [:map
+   [:Inner Inner]
+   [:Outer Outer]])
+
+(def recursive-schema-lacinia-with-malli
+  {:objects
+   {:Inner (malli->lacinia Inner)
+    :Outer (malli->lacinia Outer)}})
+
+(def recursive-schema-lacinia
+  {:objects
+   {:Inner
+    {:fields {:id {:type 'ID}
+              :name {:type 'String}
+              :outer {:type '(non-null :Outer)}}}
+
+    :Outer
+    {:fields {:id {:type 'ID}
+              :name {:type 'String}
+              :inner {:type '(non-null :Inner)}}}}})
+
 (def star-wars-schema-lacinia-with-malli
   {:enums
    {:Episode (malli->lacinia Episode)}
@@ -111,6 +149,8 @@
 (deftest create-schema
   (testing "all malli valid"
     (is (not (nil? (m/schema all-malli)))))
+  (testing "all malli valid"
+    (is (not (nil? (m/schema recursive-malli {:registry (merge (m/default-schemas) recursive-registry)})))))
   (testing "lacinia example valid"
     (is (not (nil? (->  star-wars-schema-lacinia
                         (util/inject-resolvers {:Droid/friends (fn [_ _ _])})
@@ -133,4 +173,7 @@
            (-> star-wars-schema-lacinia-with-malli :objects :Human))))
   (testing "Full schema match"
     (is (= star-wars-schema-lacinia
-           star-wars-schema-lacinia-with-malli))))
+           star-wars-schema-lacinia-with-malli)))
+  (testing "Full recursive schema match"
+    (is (= recursive-schema-lacinia
+           recursive-schema-lacinia-with-malli))))
